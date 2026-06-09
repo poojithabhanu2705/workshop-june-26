@@ -53,7 +53,20 @@ colorPicker.addEventListener("input", function () {
 canvas.addEventListener("mousedown", function (event) {
   isDrawing = true;
 
-  // Move to the starting point without drawing a line yet
+  // Lock in the drawing settings at the START of each stroke.
+  // This ensures the correct color is applied from the very first pixel,
+  // even right after the user changes the color picker value.
+  if (currentTool === "pencil") {
+    ctx.strokeStyle = drawingColor; // use the currently chosen color
+    ctx.lineWidth   = 3;
+  } else {
+    ctx.strokeStyle = "#ffffff";    // eraser paints white
+    ctx.lineWidth   = 20;
+  }
+  ctx.lineCap  = "round";
+  ctx.lineJoin = "round";
+
+  // Start a fresh path at the click position
   ctx.beginPath();
   ctx.moveTo(event.offsetX, event.offsetY);
 });
@@ -62,24 +75,13 @@ canvas.addEventListener("mousedown", function (event) {
 canvas.addEventListener("mousemove", function (event) {
   if (!isDrawing) return; // only draw when mouse button is held
 
-  if (currentTool === "pencil") {
-    // ── Pencil: draw a line from the last point to the current position
-    ctx.lineTo(event.offsetX, event.offsetY);
-    ctx.strokeStyle = drawingColor; // chosen color
-    ctx.lineWidth   = 3;            // pen thickness
-    ctx.lineCap     = "round";      // smooth line ends
-    ctx.lineJoin    = "round";      // smooth corners
-    ctx.stroke();
+  // Draw a line to the current mouse position
+  ctx.lineTo(event.offsetX, event.offsetY);
+  ctx.stroke();
 
-  } else if (currentTool === "eraser") {
-    // ── Eraser: paint white over whatever is underneath
-    ctx.lineTo(event.offsetX, event.offsetY);
-    ctx.strokeStyle = "#ffffff";    // white = erase
-    ctx.lineWidth   = 20;           // wider for easier erasing
-    ctx.lineCap     = "round";
-    ctx.lineJoin    = "round";
-    ctx.stroke();
-  }
+
+  ctx.beginPath();
+  ctx.moveTo(event.offsetX, event.offsetY);
 });
 
 // Stop drawing when the mouse button is released
