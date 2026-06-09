@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In – Drawing App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- Centered card for the sign-in form -->
+    <div class="auth-container">
+      <h1 class="auth-title">🎨 Drawing App</h1>
+      <h2 class="auth-subtitle">Sign in to continue</h2>
+
+      <!-- Show error messages here (hidden by default) -->
+      <p id="error-msg" class="auth-error" style="display: none;"></p>
+
+      <form id="signin-form" class="auth-form">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@email.com" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Your password" required />
+
+        <button type="submit" class="auth-btn">Sign In</button>
+      </form>
+
+      <!-- Link to sign-up page -->
+      <p class="auth-switch">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </p>
+    </div>
+
+    <!-- Load auth helpers first, then sign-in logic -->
+    <script src="auth.js"></script>
+    <script>
+      // If already logged in, skip the sign-in page
+      redirectIfLoggedIn();
+
+      // Handle form submission
+      document.getElementById("signin-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // stop the page from refreshing
+
+        // Read values from the form fields
+        var email    = document.getElementById("email").value.trim();
+        var password = document.getElementById("password").value;
+
+        // Try to sign in (defined in auth.js)
+        var error = signIn(email, password);
+
+        if (error) {
+          // Show the error message below the form
+          var errorEl = document.getElementById("error-msg");
+          errorEl.textContent = error;
+          errorEl.style.display = "block";
+        } else {
+          // Login succeeded — go to the drawing board
+          window.location.href = "index.html";
+        }
+      });
+    </script>
+
+  </body>
+</html>

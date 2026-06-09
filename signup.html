@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up – Drawing App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- Centered card for the sign-up form -->
+    <div class="auth-container">
+      <h1 class="auth-title">🎨 Drawing App</h1>
+      <h2 class="auth-subtitle">Create an account</h2>
+
+      <!-- Show error messages here (hidden by default) -->
+      <p id="error-msg" class="auth-error" style="display: none;"></p>
+
+      <form id="signup-form" class="auth-form">
+
+        <label for="name">Name</label>
+        <input type="text" id="name" placeholder="Your name" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@email.com" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Choose a password" required />
+
+        <button type="submit" class="auth-btn">Sign Up</button>
+      </form>
+
+      <!-- Link to sign-in page -->
+      <p class="auth-switch">
+        Already have an account? <a href="signin.html">Sign In</a>
+      </p>
+    </div>
+
+    <!-- Load auth helpers first, then sign-up logic -->
+    <script src="auth.js"></script>
+    <script>
+      // If already logged in, skip the sign-up page
+      redirectIfLoggedIn();
+
+      // Handle form submission
+      document.getElementById("signup-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // stop the page from refreshing
+
+        // Read values from the form fields
+        var name     = document.getElementById("name").value.trim();
+        var email    = document.getElementById("email").value.trim();
+        var password = document.getElementById("password").value;
+
+        // Try to register the user (defined in auth.js)
+        var error = signUp(name, email, password);
+
+        if (error) {
+          // Show the error message below the form
+          var errorEl = document.getElementById("error-msg");
+          errorEl.textContent = error;
+          errorEl.style.display = "block";
+        } else {
+          // Registration succeeded — go to sign-in page
+          alert("Account created! Please sign in.");
+          window.location.href = "signin.html";
+        }
+      });
+    </script>
+
+  </body>
+</html>
