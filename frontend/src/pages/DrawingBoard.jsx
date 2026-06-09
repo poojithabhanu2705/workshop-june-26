@@ -16,36 +16,42 @@ function Canvas() {
   const isDrawingRef = React.useRef(false)
   const currentToolRef = React.useRef('pencil')
   const colorRef = React.useRef('#000000')
-
   React.useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    ctxRef.current = ctx
+    if (!canvas) return
 
-    function resize() {
-      // preserve image by copying to temp canvas
-      const temp = document.createElement('canvas')
-      temp.width = canvas.width
-      temp.height = canvas.height
-      temp.getContext('2d').drawImage(canvas, 0, 0)
+    // Initialize canvas size and 2D context with devicePixelRatio handling
+    function setSize() {
+      const rect = canvas.getBoundingClientRect()
+      const dpr = window.devicePixelRatio || 1
 
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
+      // Set the internal pixel size of the canvas
+      canvas.width = Math.round(rect.width * dpr)
+      canvas.height = Math.round(rect.height * dpr)
 
-      ctx.drawImage(temp, 0, 0)
+      // Make the CSS size match the layout size
+      canvas.style.width = rect.width + 'px'
+      canvas.style.height = rect.height + 'px'
+
+      const ctx = canvas.getContext('2d')
+      // Reset the transform before scaling to avoid accumulating scales
+      ctx.setTransform(1, 0, 0, 1, 0, 0)
+      ctx.scale(dpr, dpr)
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctxRef.current = ctx
     }
 
-    resize()
-    window.addEventListener('resize', resize)
-    return () => window.removeEventListener('resize', resize)
-  }, [])
-
-  React.useEffect(() => {
-    const canvas = canvasRef.current
+    // Helper: get mouse coordinates relative to the canvas (CSS pixels)
+    function getXY(e) {
+      const rect = canvas.getBoundingClientRect()
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    }
 
     function onDown(e) {
       isDrawingRef.current = true
       const ctx = ctxRef.current
+      if (!ctx) return
       if (currentToolRef.current === 'pencil') {
         ctx.strokeStyle = colorRef.current
         ctx.lineWidth = 3
@@ -53,30 +59,39 @@ function Canvas() {
         ctx.strokeStyle = '#ffffff'
         ctx.lineWidth = 20
       }
-      ctx.lineCap = 'round'
-      ctx.lineJoin = 'round'
       ctx.beginPath()
-      ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+      const p = getXY(e)
+      ctx.moveTo(p.x, p.y)
     }
 
     function onMove(e) {
       if (!isDrawingRef.current) return
       const ctx = ctxRef.current
-      ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+      if (!ctx) return
+      const p = getXY(e)
+      ctx.lineTo(p.x, p.y)
       ctx.stroke()
       ctx.beginPath()
-      ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+      ctx.moveTo(p.x, p.y)
     }
 
     function onUp() { isDrawingRef.current = false }
 
+    // Initialize size after layout
+    setTimeout(setSize, 0)
+    window.addEventListener('resize', setSize)
+
+    // Attach DOM mouse event listeners
     canvas.addEventListener('mousedown', onDown)
     canvas.addEventListener('mousemove', onMove)
+    canvas.addEventListener('mouseleave', onUp)
     window.addEventListener('mouseup', onUp)
 
     return () => {
+      window.removeEventListener('resize', setSize)
       canvas.removeEventListener('mousedown', onDown)
       canvas.removeEventListener('mousemove', onMove)
+      canvas.removeEventListener('mouseleave', onUp)
       window.removeEventListener('mouseup', onUp)
     }
   }, [])
