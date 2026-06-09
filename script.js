@@ -79,11 +79,7 @@ canvas.addEventListener("mousemove", function (event) {
   ctx.lineTo(event.offsetX, event.offsetY);
   ctx.stroke();
 
-  // ── Key fix: reset the path after each stroke().
-  // Without this, the path keeps growing and ctx.stroke() redraws the
-  // entire path every frame, which can cause color/style bleed.
-  // Starting a new sub-path from the current point keeps each segment
-  // independent and ensures settings applied in mousedown stay active.
+
   ctx.beginPath();
   ctx.moveTo(event.offsetX, event.offsetY);
 });
