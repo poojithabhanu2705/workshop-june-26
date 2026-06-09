@@ -28,11 +28,37 @@
         <label for="color-picker">Color:</label>
         <input type="color" id="color-picker" value="#000000" title="Pick a color" />
 
+        <!-- Show the logged-in user's name and a logout button -->
+        <span id="user-name" class="user-name" aria-live="polite"></span>
+        <button id="btn-logout" class="tool-btn logout-btn" title="Logout">Logout</button>
+
       </div>
     </nav>
 
     <!-- Canvas: the drawing surface -->
     <canvas id="drawing-canvas"></canvas>
+
+    <!-- Load auth helpers and protect the page if not logged in -->
+    <script src="auth.js"></script>
+    <script>
+      // Require a logged-in user to view the drawing board.
+      // If no session exists, requireLogin() will redirect to signin.html.
+      requireLogin();
+
+      // Display the user's name in the navbar and wire the logout button.
+      (function () {
+        var session = getSession();
+        if (session && session.name) {
+          document.getElementById('user-name').textContent = session.name;
+        }
+
+        document.getElementById('btn-logout').addEventListener('click', function () {
+          // Clear session from Local Storage and go to sign in page
+          logout();
+          window.location.href = 'signin.html';
+        });
+      })();
+    </script>
 
     <script src="script.js"></script>
   </body>
