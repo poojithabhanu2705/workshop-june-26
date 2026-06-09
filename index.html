@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- Navbar: holds the drawing tools -->
+    <nav class="navbar">
+      <span class="app-title">🎨 Drawing App</span>
+
+      <div class="tools">
+
+        <!-- Pencil tool button -->
+        <button id="btn-pencil" class="tool-btn active" title="Pencil">
+          ✏️ Pencil
+        </button>
+
+        <!-- Eraser tool button -->
+        <button id="btn-eraser" class="tool-btn" title="Eraser">
+          🧹 Eraser
+        </button>
+
+        <!-- Color picker input -->
+        <label for="color-picker">Color:</label>
+        <input type="color" id="color-picker" value="#000000" title="Pick a color" />
+
+      </div>
+    </nav>
+
+    <!-- Canvas: the drawing surface -->
+    <canvas id="drawing-canvas"></canvas>
+
+    <script src="script.js"></script>
+  </body>
+</html>

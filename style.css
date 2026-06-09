@@ -1,0 +1,75 @@
+/* ── Reset & base ─────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ── Navbar ───────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: #ffffff;
+  border-bottom: 2px solid #ddd;
+  flex-wrap: wrap;         /* wraps on small screens */
+}
+
+.app-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-right: auto;      /* pushes tools to the right */
+}
+
+/* Group that holds all tool buttons + color picker */
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Individual tool button */
+.tool-btn {
+  padding: 8px 16px;
+  border: 2px solid #bbb;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* Highlight the currently active tool */
+.tool-btn.active {
+  border-color: #333;
+  background: #e8e8e8;
+  font-weight: bold;
+}
+
+/* Color picker sits inline with the buttons */
+input[type="color"] {
+  width: 36px;
+  height: 36px;
+  border: 2px solid #bbb;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px;
+  background: none;
+}
+
+/* ── Canvas ───────────────────────────────────────── */
+#drawing-canvas {
+  display: block;
+  background: #ffffff;
+  flex: 1;                  /* fill remaining vertical space */
+  cursor: crosshair;
+}
